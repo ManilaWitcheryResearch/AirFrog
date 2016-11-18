@@ -22,7 +22,7 @@ namespace Manila.AirFrog.Common.Event
             if (_dict.ContainsKey(name))
             {
                 // better using exception.
-                throw new Exception("Duplicated event name.");
+                // throw new Exception("Duplicated event name.");
                 return false;
             }
             else

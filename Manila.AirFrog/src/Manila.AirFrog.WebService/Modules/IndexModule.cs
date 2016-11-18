@@ -1,4 +1,4 @@
-﻿namespace Minila.AirFrog.WebService.Modules
+﻿namespace Manila.AirFrog.WebService.Modules
 {
     using Nancy;
     public class IndexModule : NancyModule
