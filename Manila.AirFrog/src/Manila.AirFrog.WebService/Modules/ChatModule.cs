@@ -1,27 +1,55 @@
 ﻿namespace Manila.AirFrog.WebService.Modules
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
     using Nancy;
     using Newtonsoft.Json;
     using Manila.AirFrog.WebService.Models;
-    public class ChatModule : NancyModule
+    public class ChatModule : BaseApiModule
     {
-        private object successResponse = new { result = "success", errormsg = "" };
+        private ChatModel requestChatModel = null;
+        private Response BeforeChatApiRequest(NancyContext ctx)
+        {
+            try
+            {
+                requestChatModel = JsonConvert.DeserializeObject<ChatModel>(RequestJson);
+                AirFrog.LoggerMan.Log(JsonConvert.SerializeObject(requestChatModel));
+            }
+            catch (Exception e)
+            {
+                AirFrog.LoggerMan.LogErr(e.ToString());
+                return Response.AsJson(badRequestResponse, Nancy.HttpStatusCode.BadRequest);
+            }
+            return null;
+        }
+        private void AfterChatApiResponse(NancyContext ctx)
+        {
+            ;
+        }
+        private Response OnChatApiRequestError(NancyContext ctx, Exception ex)
+        {
+            AirFrog.LoggerMan.LogErr(ex.ToString());
+            return Response.AsJson(internalErrorResponse, Nancy.HttpStatusCode.InternalServerError);
+        }
         public ChatModule()
         {
+            Before += BeforeChatApiRequest;
+            After += AfterChatApiResponse;
+            OnError += OnChatApiRequestError;
+
             Post["/api/mcs/chatmsg"] = parameters =>
             {
-                var id = this.Request.Body;
-                var length = this.Request.Body.Length;
-                var data = new byte[length];
-                id.Read(data, 0, (int)length);
-                var body = System.Text.Encoding.Default.GetString(data);
-
-                AirFrog.LoggerMan.Log(body);
-
-                var request = JsonConvert.DeserializeObject<ChatModel>(body);
-
-                AirFrog.LoggerMan.Log(JsonConvert.SerializeObject(request));
-
+                return Response.AsJson(successResponse);
+            };
+            Post["/api/mcs/archievemsg"] = parameters =>
+            {
+                return Response.AsJson(successResponse);
+            };
+            Post["/api/mcs/loginmsg"] = parameters =>
+            {
                 return Response.AsJson(successResponse);
             };
         }

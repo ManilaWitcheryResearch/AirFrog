@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Manila.AirFrog.Common.Event
+﻿namespace Manila.AirFrog.Common.Event
 {
-    public class LightEventHub
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    public class LightEventHub : IEventHub
     {
         private Dictionary<string, Action<string>> _dict;
         private Dictionary<string, bool> _keep;

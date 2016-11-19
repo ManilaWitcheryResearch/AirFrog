@@ -7,12 +7,14 @@
     using System.Threading.Tasks;
     using Nancy.Hosting.Self;
     using Manila.AirFrog.Common;
+    using Manila.AirFrog.Common.Core;
 
     class AirFrog
     {
         public static bool Inited = false;
         public static Logger LoggerMan;
         private static NancyHost host;
+        public static DataAccess DataAcceess;
 
         public static void Init()
         {
