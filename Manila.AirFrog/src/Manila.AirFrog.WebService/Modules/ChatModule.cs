@@ -8,6 +8,7 @@
     using Nancy;
     using Newtonsoft.Json;
     using Manila.AirFrog.WebService.Models;
+    using Manila.AirFrog.Common.Models;
     public class ChatModule : BaseApiModule
     {
         private ChatModel requestChatModel = null;
@@ -42,14 +43,41 @@
 
             Post["/api/mcs/chatmsg"] = parameters =>
             {
+                AirFrog.EventHub.Emit("Chat.Public.SendToTelegram.Group", new TgChatModel {
+                    DisplayName = requestChatModel.PlayerName,
+                    Text = requestChatModel.Text
+                });
+
                 return Response.AsJson(successResponse);
             };
+
             Post["/api/mcs/archievemsg"] = parameters =>
             {
+                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new TgChatModel
+                {
+                    Text = string.Format("Player {0} just achieved {1}, congrats!", requestChatModel.PlayerName, requestChatModel.Archieve),
+                });
+
                 return Response.AsJson(successResponse);
             };
+
+            Post["/api/mcs/deathmsg"] = parameters =>
+            {
+                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new TgChatModel
+                {
+                    Text = string.Format("Player {0} just died because {1}!", requestChatModel.PlayerName, requestChatModel.Action),
+                });
+
+                return Response.AsJson(successResponse);
+            };
+
             Post["/api/mcs/loginmsg"] = parameters =>
             {
+                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new TgChatModel
+                {
+                    Text = string.Format("Player {0} just {1}!", requestChatModel.PlayerName, requestChatModel.Action),
+                });
+
                 return Response.AsJson(successResponse);
             };
         }

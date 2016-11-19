@@ -8,7 +8,7 @@
 
     public interface IEventHub
     {
-        bool Emit(string name, Action<string> action, bool keep = true);
-        void Trigger(string eventname);
+        bool Register(string name, Action<object> action, bool keep = true);
+        void Emit(string eventname, object obj = null);
     }
 }

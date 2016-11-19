@@ -53,16 +53,17 @@
                     Address = requestMonitoringModel.Address,
                     McVersion = requestMonitoringModel.McVersion,
                     ModVersion = requestMonitoringModel.ModVersion,
-                    ModPort = requestMonitoringModel.ModPort
-                };
-                var p = AirFrog.DataAcceess.RegisterNewServer(x);
+                    ModPort = requestMonitoringModel.ModPort,
+                    Endpoint = string.Format("http://{0}:{1}/", requestMonitoringModel.Address, requestMonitoringModel.ModPort),
+            };
+                var p = AirFrog.DataAccess.RegisterNewServer(x);
                 if (p == null)
                 {
                     throw new Exception("RequestDataOrProcessError: Register Mcs failed.");
                 }
                 else
                 {
-                    return Response.AsJson(new { result = "success", errormsg = "", serverid = p.ServerId });
+                    return Response.AsJson(new { result = "success", errormsg = "", text = p.ServerId });
                 }
             };
 
@@ -86,14 +87,14 @@
                     ModPort = requestMonitoringModel.ModPort == 0 ? false : true
                 };
 
-                AirFrog.DataAcceess.UpdateServerInfo(x, y);
+                AirFrog.DataAccess.UpdateServerInfo(x, y);
 
                 return Response.AsJson(new { result = "success", errormsg = "" });
             };
 
             Post["/api/mcs/golive"] = parameters =>
             {
-                AirFrog.DataAcceess.UpdateServerMonitoringInfo(
+                AirFrog.DataAccess.UpdateServerMonitoringInfo(
                     new McsMonitoringModel {
                         ServerId = requestMonitoringModel.ServerId,
                         Status = "live",
@@ -108,14 +109,14 @@
 
             Post["/api/mcs/heartbeat"] = parameters =>
             {
-                AirFrog.DataAcceess.UpdateServerLastSeen(requestMonitoringModel.ServerId);
+                AirFrog.DataAccess.UpdateServerLastSeen(requestMonitoringModel.ServerId);
 
                 return Response.AsJson(successResponse);
             };
 
             Post["/api/mcs/server_closedown"] = parameters =>
             {
-                AirFrog.DataAcceess.UpdateServerMonitoringInfo(
+                AirFrog.DataAccess.UpdateServerMonitoringInfo(
                     new McsMonitoringModel
                     {
                         ServerId = requestMonitoringModel.ServerId,

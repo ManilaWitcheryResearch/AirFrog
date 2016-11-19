@@ -22,6 +22,8 @@
         public string ModVersion { get; set; }
         [DataMember(Name = "mod_port")]
         public int ModPort { get; set; }
+        [DataMember(Name = "endpoint")]
+        public string Endpoint { get; set; }
 
         public void ApplyUpdate(McsMetaModel modifier, McsMetaModelMask mask)
         {
@@ -49,6 +51,14 @@
             {
                 if (modifier.ModPort == 0) throw new Exception("mask validation failed.");
                 this.ModPort = modifier.ModPort;
+            }
+
+            this.Endpoint = string.Format("http://{0}:{1}/", this.Address, this.ModPort);
+
+            if (mask.Endpoint)
+            {
+                if (modifier.Endpoint == null) throw new Exception("mask validation failed.");
+                this.Endpoint = modifier.Endpoint;
             }
         }
     }
@@ -93,6 +103,8 @@
         public bool ModVersion { get; set; }
         [DataMember(Name = "mod_port")]
         public bool ModPort { get; set; }
+        [DataMember(Name = "endpoint")]
+        public bool Endpoint { get; set; }
     }
 
     [DataContract]
@@ -104,5 +116,16 @@
         public bool Status { get; set; }
         [DataMember(Name = "lastseen")]
         public bool LastSeen { get; set; }
+    }
+
+    [DataContract]
+    public class McsResponseWithTextModel
+    {
+        [DataMember(Name = "result")]
+        public string Result { get; set; }
+        [DataMember(Name = "text")]
+        public string Text { get; set; }
+        [DataMember(Name = "errormsg")]
+        public string ErrorMsg { get; set; }
     }
 }

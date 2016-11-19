@@ -11,7 +11,5 @@
     {
         public Dictionary<string, McsMetaModel> McsGroup = new Dictionary<string, McsMetaModel>();
         public Dictionary<string, McsMonitoringModel> McsMonitoringGroup = new Dictionary<string, McsMonitoringModel>();
-        public Dictionary<string, string> McsNameToId = new Dictionary<string, string>();
-        public Dictionary<string, string> McsAddressToId = new Dictionary<string, string>();
     }
 }

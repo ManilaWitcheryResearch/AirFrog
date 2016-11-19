@@ -8,16 +8,30 @@
 
     public class LightEventHub : IEventHub
     {
-        private Dictionary<string, Action<string>> _dict;
+        private Dictionary<string, Action<object>> _dict;
         private Dictionary<string, bool> _keep;
+        private ILogger Logger;
+        static private LightEventHub instance = null;
 
-        public LightEventHub()
-        {
-            _dict = new Dictionary<string, Action<string>>();
-            _keep = new Dictionary<string, bool>();
+        static public LightEventHub Instance {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new LightEventHub();
+                }
+                return instance;
+            }
         }
 
-        public bool Emit(string name, Action<string> action, bool keep = true)
+        public LightEventHub(ILogger logger = null)
+        {
+            _dict = new Dictionary<string, Action<object>>();
+            _keep = new Dictionary<string, bool>();
+            Logger = logger == null ? new Logger("") : logger;
+        }
+
+        public bool Register(string name, Action<object> action, bool keep = true)
         {
             if (_dict.ContainsKey(name))
             {
@@ -33,21 +47,24 @@
             }
         }
 
-        public void Trigger(string eventname)
+        public void Emit(string eventname, object obj = null)
         {
             if (_dict.ContainsKey(eventname))
             {
-                _dict[eventname]("");
+                Logger.Log(string.Format("Event {0} emitted.", eventname));
+                Task.Run(() => _dict[eventname](obj));
                 if (_keep[eventname] == false)
                 {
                     _dict.Remove(eventname);
                     _keep.Remove(eventname);
                 }
+
             }
             else
             {
+                Logger.LogErr(string.Format("Event {0} emitted but not registered.", eventname));
                 // throw exception
-                throw new Exception("Invalid event name.");
+                // throw new Exception("Invalid event name.");
             }
         }
 

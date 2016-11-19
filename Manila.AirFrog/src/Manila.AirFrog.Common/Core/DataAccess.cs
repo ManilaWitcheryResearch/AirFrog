@@ -7,14 +7,16 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Manila.AirFrog.Common.Models;
+    using Newtonsoft.Json;
 
     public class DataAccess
     {
-        private MemoryStore mStore;
-        private ILogger Logger;
+        private MemoryStore mStore = new MemoryStore();
+        private ILogger Logger = new Logger("useless");
         public DataAccess()
         {
-            ;
+            //this.mStore = new MemoryStore();
+            //this.Logger = new Logger("useless");
         }
 
         public McsMetaModel RegisterNewServer(McsMetaModel mcsInfo, bool inner = false)
@@ -55,6 +57,7 @@
                         Status = "new",
                         LastSeen = DateTime.UtcNow,
                     };
+                    return mcsInfo;
                 }
                 else
                 {
@@ -110,6 +113,26 @@
             try
             {
                 mStore.McsMonitoringGroup[serverId].LastSeen = DateTime.UtcNow;
+            }
+            catch (Exception e)
+            {
+                Logger.LogErr(e.ToString());
+            }
+        }
+
+        public void SendChatMsgToMcs(TgChatModel obj)
+        {
+            try
+            {
+                foreach (var x in mStore.McsGroup)
+                {
+                    string response = Utility.HttpJsonRequestPoster(obj, Utility.CombineUriToString(x.Value.Endpoint, "/api/chatmsg"));
+                    var res = JsonConvert.DeserializeObject<McsResponseWithTextModel>(response);
+                    if (res.Result != "success")
+                    {
+                        throw new Exception(string.Format("SendChatMsgToMcs failed: {0}", res.ErrorMsg));
+                    }
+                }
             }
             catch (Exception e)
             {
