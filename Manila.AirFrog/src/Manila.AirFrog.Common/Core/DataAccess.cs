@@ -126,6 +126,10 @@
             {
                 foreach (var x in mStore.McsGroup)
                 {
+                    if (mStore.McsMonitoringGroup[x.Value.ServerId].Status != "live")
+                    {
+                        continue;
+                    }
                     string response = Utility.HttpJsonRequestPoster(obj, Utility.CombineUriToString(x.Value.Endpoint, "/api/chatmsg"));
                     var res = JsonConvert.DeserializeObject<McsResponseWithTextModel>(response);
                     if (res.Result != "success")
