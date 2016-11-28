@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Core\DataAccess.cs" />
     <Compile Include="Core\MemoryStore.cs" />
+    <Compile Include="Core\Scheduler.cs" />
+    <Compile Include="Core\Terminal.cs" />
     <Compile Include="Event\ChatEvents.cs" />
     <Compile Include="Event\IEventHub.cs" />
     <Compile Include="Event\LightEventHub.cs" />
