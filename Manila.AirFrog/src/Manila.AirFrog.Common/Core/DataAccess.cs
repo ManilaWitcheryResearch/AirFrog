@@ -120,12 +120,39 @@
             }
         }
 
+        public string ExecuteCommandOnServer(string serverId, string cmd)
+        {
+            try
+            {
+                if (mStore.McsMonitoringGroup[serverId].Status == "live")
+                {
+                    string response = Utility.HttpJsonRequestPoster(new { cmd = "cmd" },
+                        Utility.CombineUriToString(mStore.McsGroup[serverId].Endpoint, "/api/command"));
+                    var res = JsonConvert.DeserializeObject<McsResponseWithTextModel>(response);
+                    if (res.Result != "success")
+                    {
+                        throw new Exception(string.Format("SendChatMsgToMcs failed: {0}", res.ErrorMsg));
+                    }
+                    return res.Text;
+                }
+            }
+            catch (Exception e)
+            {
+                ;
+            }
+            return "[(local)EXECUTE FAILED: Error in sending request]";
+        }
+
         public void SendChatMsgToMcs(TgChatModel obj)
         {
             try
             {
                 foreach (var x in mStore.McsGroup)
                 {
+                    if (mStore.McsMonitoringGroup[x.Value.ServerId].Status != "live")
+                    {
+                        continue;
+                    }
                     string response = Utility.HttpJsonRequestPoster(obj, Utility.CombineUriToString(x.Value.Endpoint, "/api/chatmsg"));
                     var res = JsonConvert.DeserializeObject<McsResponseWithTextModel>(response);
                     if (res.Result != "success")
