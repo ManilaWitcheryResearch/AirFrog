@@ -37,8 +37,7 @@
         public void ScheduleUpBuildinTasks()
         {
             MonitoringTimer = new Timer((object x) => {
-                ;
-                // TODO: write monitoring timer callback
+                DataAccess.Instance.SendHeartbeatToMcs();
             }, null, new TimeSpan(0, 1, 0), new TimeSpan(0, 5, 0));
         }
 

@@ -207,21 +207,21 @@
             }
         }
 
-        public void SendHeartbeatToMcs(StdChatModel obj)
+        public void SendHeartbeatToMcs()
         {
             try
             {
                 foreach (var x in mStore.McsGroup)
                 {
-                    if (mStore.McsMonitoringGroup[x.Value.ServerId].Status != "live" || x.Value.ServerId == ignoreId)
+                    if (mStore.McsMonitoringGroup[x.Value.ServerId].Status != "live")
                     {
                         continue;
                     }
-                    string response = Utility.HttpJsonRequestPoster(obj, Utility.CombineUriToString(x.Value.Endpoint, "/api/chatmsg"));
+                    string response = Utility.HttpJsonRequestPoster(new { }, Utility.CombineUriToString(x.Value.Endpoint, "/api/heartbeat"));
                     var res = JsonConvert.DeserializeObject<StdResponseWithTextModel>(response);
                     if (res.Result != "success")
                     {
-                        throw new Exception(string.Format("SendChatMsgToMcs failed: {0}", res.ErrorMsg));
+                        throw new Exception(string.Format("SendHeartbeatToMcs failed: {0}", res.ErrorMsg));
                     }
                 }
             }
