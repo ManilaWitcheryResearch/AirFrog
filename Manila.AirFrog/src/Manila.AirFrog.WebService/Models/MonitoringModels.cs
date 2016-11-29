@@ -8,7 +8,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    class MonitoringModel
+    class WebMonitoringModel
     {
         [DataMember(Name = "serverid")]
         public string ServerId { get; set; }

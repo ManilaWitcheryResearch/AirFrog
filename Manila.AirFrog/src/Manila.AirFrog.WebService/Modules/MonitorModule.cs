@@ -11,12 +11,12 @@
     using Manila.AirFrog.Common.Models;
     public class MonitoringModule : BaseApiModule
     {
-        private MonitoringModel requestMonitoringModel = null;
+        private WebMonitoringModel requestMonitoringModel = null;
         private Response BeforeMonitoringApiRequest(NancyContext ctx)
         {
             try
             {
-                requestMonitoringModel = JsonConvert.DeserializeObject<MonitoringModel>(RequestJson);
+                requestMonitoringModel = JsonConvert.DeserializeObject<WebMonitoringModel>(RequestJson);
                 AirFrog.LoggerMan.Log(JsonConvert.SerializeObject(requestMonitoringModel));
             }
             catch (Exception e)

@@ -14,8 +14,20 @@
         {
             eventHub.Register("Chat.Public.FromTelegram",
                     new Action<object>((x) => {
-                        var y = (TgChatModel)x;
+                        var y = (StdChatModel)x;
                         dataAccess.SendChatMsgToMcs(y);
+                    }));
+
+            eventHub.Register("Chat.Public.FromMcs",
+                    new Action<object>((x) => {
+                        var y = (StdChatModel)x;
+                        dataAccess.SendChatMsgToMcs(y, y.Source);
+                        eventHub.Emit("Chat.Public.SendToTelegram.Group", new StdChatModel
+                        {
+                            Source = y.Source,
+                            DisplayName = y.DisplayName,
+                            Text = y.Text
+                        });
                     }));
         }
     }

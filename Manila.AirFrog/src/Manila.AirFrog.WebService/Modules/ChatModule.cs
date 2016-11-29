@@ -11,12 +11,12 @@
     using Manila.AirFrog.Common.Models;
     public class ChatModule : BaseApiModule
     {
-        private ChatModel requestChatModel = null;
+        private WebChatModel requestChatModel = null;
         private Response BeforeChatApiRequest(NancyContext ctx)
         {
             try
             {
-                requestChatModel = JsonConvert.DeserializeObject<ChatModel>(RequestJson);
+                requestChatModel = JsonConvert.DeserializeObject<WebChatModel>(RequestJson);
                 AirFrog.LoggerMan.Log(JsonConvert.SerializeObject(requestChatModel));
             }
             catch (Exception e)
@@ -43,7 +43,8 @@
 
             Post["/api/mcs/chatmsg"] = parameters =>
             {
-                AirFrog.EventHub.Emit("Chat.Public.SendToTelegram.Group", new TgChatModel {
+                AirFrog.EventHub.Emit("Chat.Public.FromMcs.Group", new StdChatModel {
+                    Source = requestChatModel.ServerId,
                     DisplayName = requestChatModel.PlayerName,
                     Text = requestChatModel.Text
                 });
@@ -53,8 +54,9 @@
 
             Post["/api/mcs/archievemsg"] = parameters =>
             {
-                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new TgChatModel
+                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new StdChatModel
                 {
+                    Source = requestChatModel.ServerId,
                     Text = string.Format("Player {0} just achieved {1}, congrats!", requestChatModel.PlayerName, requestChatModel.Archieve),
                 });
 
@@ -63,8 +65,9 @@
 
             Post["/api/mcs/deathmsg"] = parameters =>
             {
-                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new TgChatModel
+                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new StdChatModel
                 {
+                    Source = requestChatModel.ServerId,
                     Text = string.Format("Player {0} just died because {1}!", requestChatModel.PlayerName, requestChatModel.Action),
                 });
 
@@ -73,8 +76,9 @@
 
             Post["/api/mcs/loginmsg"] = parameters =>
             {
-                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new TgChatModel
+                AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new StdChatModel
                 {
+                    Source = requestChatModel.ServerId,
                     Text = string.Format("Player {0} just {1}!", requestChatModel.PlayerName, requestChatModel.Action),
                 });
 
