@@ -7,11 +7,34 @@
     using System.Threading.Tasks;
     using Manila.AirFrog.Common.Models;
 
-    class Terminal
+    class TerminalManager
     {
-        public string[] terminalList;
+        public Dictionary<string, BaseTerminal> terminalList;
 
-        public Terminal()
+
+    }
+
+    class BaseTerminal
+    {
+        public DateTime LastActiveTime { get; private set; }
+        public DateTime LastInputTime { get; private set; }
+
+        public BaseTerminal()
+        {
+            ;
+        }
+
+        public void InputLine(string line)
+        {
+            ;
+        }
+
+        // hook on ( in/out )
+    }
+
+    class StdTerminal : BaseTerminal
+    {
+        public StdTerminal()
         {
             ;
         }
