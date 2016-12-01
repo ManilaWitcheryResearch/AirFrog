@@ -10,9 +10,6 @@
 
     class Scheduler
     {
-        public Dictionary<string, McsMetaModel> McsGroup = new Dictionary<string, McsMetaModel>();
-        public Dictionary<string, McsMonitoringModel> McsMonitoringGroup = new Dictionary<string, McsMonitoringModel>();
-
         static private Scheduler instance = null;
 
         static public Scheduler Instance
