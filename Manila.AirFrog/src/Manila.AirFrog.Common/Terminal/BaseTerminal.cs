@@ -45,6 +45,7 @@
         public void InputLine(string line)
         {
             this.OnInput(line);
+            // CmdExecutor.Instance.RunSync(line.Split(' ').ToList(), this);
         }
 
         public void OutputLine(string line)

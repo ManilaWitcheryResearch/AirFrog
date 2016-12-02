@@ -20,7 +20,7 @@
 
         protected override void OnInput(string cmd)
         {
-            throw new NotImplementedException();
+            CmdExecutor.Instance.RunSync(cmd.Split(' ').ToList(), this);
         }
 
         protected override void OnOutput(string message)
