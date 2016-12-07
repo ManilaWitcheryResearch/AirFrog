@@ -43,7 +43,7 @@
 
             Post["/api/mcs/chatmsg"] = parameters =>
             {
-                AirFrog.EventHub.Emit("Chat.Public.FromMcs.Group", new StdChatModel {
+                AirFrog.EventHub.Emit("Chat.Public.FromMcs", new StdChatModel {
                     Source = requestChatModel.ServerId,
                     DisplayName = requestChatModel.PlayerName,
                     Text = requestChatModel.Text
