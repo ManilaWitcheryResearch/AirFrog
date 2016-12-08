@@ -8,7 +8,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    class ChatModel
+    class WebChatModel
     {
         [DataMember(Name = "serverid")]
         public string ServerId { get; set; }

@@ -56,25 +56,31 @@
 
                 EventHub.Register("Chat.Public.SendToTelegram.Group", 
                     new Action<object>((x) => {
-                        var y = (TgChatModel)x;
+                        var y = (StdChatModel)x;
+                        var serverInfo = DataAccess.Instance.QueryServerInfo(y.Source);
+                        var serverName = serverInfo == null ? y.Source : serverInfo.Name;
                         Task.Run(async () => {
-                            await Bot.SendTextMessageAsync(trustedGroups[0], string.Format("[McMsg][{0}]: {1}", y.DisplayName, y.Text));
+                            await Bot.SendTextMessageAsync(trustedGroups[0], string.Format("[{0}][{1}]: {2}", serverName, y.DisplayName, y.Text));
                         }).Wait();
                     }));
 
                 EventHub.Register("Chat.Public.BroadcastToTelegram.Group",
                     new Action<object>((x) => {
-                        var y = (TgChatModel)x;
+                        var y = (StdChatModel)x;
+                        var serverInfo = DataAccess.Instance.QueryServerInfo(y.Source);
+                        var serverName = serverInfo == null ? y.Source : serverInfo.Name;
                         Task.Run(async () => {
-                            await Bot.SendTextMessageAsync(trustedGroups[0], string.Format("[McMsg] {0}", y.Text));
+                            await Bot.SendTextMessageAsync(trustedGroups[0], string.Format("[{0}] {1}", serverName, y.Text));
                         }).Wait();
                     }));
 
                 EventHub.Register("Chat.Public.SendToTelegram.Admin",
                     new Action<object>((x) => {
-                        var y = (TgChatModel)x;
+                        var y = (StdChatModel)x;
+                        var serverInfo = DataAccess.Instance.QueryServerInfo(y.Source);
+                        var serverName = serverInfo == null ? y.Source : serverInfo.Name;
                         Task.Run(async () => {
-                            await Bot.SendTextMessageAsync(trustedGroups[0], string.Format("[McMsg][{0}]: {1}", y.DisplayName, y.Text));
+                            await Bot.SendTextMessageAsync(trustedGroups[0], string.Format("[{0}][{1}]: {1}", serverName, y.DisplayName, y.Text));
                         }).Wait();
                     }));
 
@@ -130,8 +136,9 @@
             {
                 if (trustedGroups.Contains(message.Chat.Id))
                 {
-                    EventHub.Emit("Chat.Public.FromTelegram", new TgChatModel
+                    EventHub.Emit("Chat.Public.FromTelegram", new StdChatModel
                     {
+                        Source = "TelegramGroup",
                         DisplayName = string.Format("{0} {1}", message.From.FirstName, message.From.LastName),
                         Text = message.Text
                     });

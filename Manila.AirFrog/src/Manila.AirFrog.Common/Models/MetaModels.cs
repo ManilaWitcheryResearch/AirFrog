@@ -118,14 +118,5 @@
         public bool LastSeen { get; set; }
     }
 
-    [DataContract]
-    public class McsResponseWithTextModel
-    {
-        [DataMember(Name = "result")]
-        public string Result { get; set; }
-        [DataMember(Name = "text")]
-        public string Text { get; set; }
-        [DataMember(Name = "errormsg")]
-        public string ErrorMsg { get; set; }
-    }
+
 }

@@ -13,21 +13,61 @@
     {
         private MemoryStore mStore = new MemoryStore();
         private ILogger Logger = new Logger("useless");
+
+        static private DataAccess instance = null;
+
+        static public DataAccess Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new DataAccess();
+                }
+                return instance;
+            }
+        }
+
         public DataAccess()
         {
             //this.mStore = new MemoryStore();
             //this.Logger = new Logger("useless");
         }
 
+        public McsMetaModel QueryServerInfo(string serverId)
+        {
+            try
+            {
+                return mStore.McsGroup[serverId];
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public McsMonitoringModel QueryServerMonitoringInfo(string serverId)
+        {
+            try
+            {
+                return mStore.McsMonitoringGroup[serverId];
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public McsMetaModel RegisterNewServer(McsMetaModel mcsInfo, bool inner = false)
         {
+            if (string.IsNullOrEmpty(mcsInfo.ServerId))
+            {
+                // throw new Exception("No serverid found at mcs inner register.");
+                return null;
+            }
+
             if (inner)
             {
-                if (string.IsNullOrEmpty(mcsInfo.ServerId))
-                {
-                    // throw new Exception("No serverid found at mcs inner register.");
-                    return null;
-                }
                 mStore.McsGroup[mcsInfo.ServerId] = mcsInfo;
                 if (mStore.McsMonitoringGroup.ContainsKey(mcsInfo.ServerId))
                 {
@@ -128,7 +168,7 @@
                 {
                     string response = Utility.HttpJsonRequestPoster(new { cmd = "cmd" },
                         Utility.CombineUriToString(mStore.McsGroup[serverId].Endpoint, "/api/command"));
-                    var res = JsonConvert.DeserializeObject<McsResponseWithTextModel>(response);
+                    var res = JsonConvert.DeserializeObject<StdResponseWithTextModel>(response);
                     if (res.Result != "success")
                     {
                         throw new Exception(string.Format("SendChatMsgToMcs failed: {0}", res.ErrorMsg));
@@ -143,7 +183,31 @@
             return "[(local)EXECUTE FAILED: Error in sending request]";
         }
 
-        public void SendChatMsgToMcs(TgChatModel obj)
+        public void SendChatMsgToMcs(StdChatModel obj, string ignoreId = "!!DONT CHANGE THIS!!")
+        {
+            try
+            {
+                foreach (var x in mStore.McsGroup)
+                {
+                    if (mStore.McsMonitoringGroup[x.Value.ServerId].Status != "live" || x.Value.ServerId == ignoreId)
+                    {
+                        continue;
+                    }
+                    string response = Utility.HttpJsonRequestPoster(obj, Utility.CombineUriToString(x.Value.Endpoint, "/api/chatmsg"));
+                    var res = JsonConvert.DeserializeObject<StdResponseWithTextModel>(response);
+                    if (res.Result != "success")
+                    {
+                        throw new Exception(string.Format("SendChatMsgToMcs failed: {0}", res.ErrorMsg));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogErr(e.ToString());
+            }
+        }
+
+        public void SendHeartbeatToMcs()
         {
             try
             {
@@ -153,11 +217,11 @@
                     {
                         continue;
                     }
-                    string response = Utility.HttpJsonRequestPoster(obj, Utility.CombineUriToString(x.Value.Endpoint, "/api/chatmsg"));
-                    var res = JsonConvert.DeserializeObject<McsResponseWithTextModel>(response);
+                    string response = Utility.HttpJsonRequestPoster(new { }, Utility.CombineUriToString(x.Value.Endpoint, "/api/heartbeat"));
+                    var res = JsonConvert.DeserializeObject<StdResponseWithTextModel>(response);
                     if (res.Result != "success")
                     {
-                        throw new Exception(string.Format("SendChatMsgToMcs failed: {0}", res.ErrorMsg));
+                        throw new Exception(string.Format("SendHeartbeatToMcs failed: {0}", res.ErrorMsg));
                     }
                 }
             }

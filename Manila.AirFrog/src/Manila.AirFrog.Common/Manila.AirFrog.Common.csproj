@@ -54,15 +54,19 @@
     <Compile Include="Core\DataAccess.cs" />
     <Compile Include="Core\MemoryStore.cs" />
     <Compile Include="Core\Scheduler.cs" />
-    <Compile Include="Core\Terminal.cs" />
     <Compile Include="Event\ChatEvents.cs" />
     <Compile Include="Event\IEventHub.cs" />
     <Compile Include="Event\LightEventHub.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Models\McsModels.cs" />
-    <Compile Include="Models\TgModels.cs" />
+    <Compile Include="Models\MetaModels.cs" />
+    <Compile Include="Models\StdModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Terminal\BaseTerminal.cs" />
+    <Compile Include="Terminal\CmdExecutor.cs" />
+    <Compile Include="Terminal\IBaseTerminal.cs" />
+    <Compile Include="Terminal\StdTerminal.cs" />
+    <Compile Include="Terminal\TerminalManager.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
