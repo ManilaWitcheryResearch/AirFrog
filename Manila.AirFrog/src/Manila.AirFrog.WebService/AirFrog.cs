@@ -30,7 +30,7 @@
             var uri = new Uri("http://localhost:8000");
             LoggerMan = new Logger(String.Format("{0}.log", String.Format("{0:yyyy'-'MM'-'dd'_'HH'-'mm'-'ss}", DateTime.UtcNow)));
             host = new NancyHost(uri);
-            DataAccess = new DataAccess();
+            DataAccess = DataAccess.Instance;
             EventHub = LightEventHub.Instance;
             TgBot = new TelegramBot("202050640:AAFvS1MioQBZiIsAuWNbPTFtyNiGbfpJUAM", LoggerMan, EventHub);
             Inited = true;

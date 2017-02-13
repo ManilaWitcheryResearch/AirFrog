@@ -10,7 +10,7 @@
 
     public class ChatEvents
     {
-        public static void Register(IEventHub eventHub, DataAccess dataAccess)
+        public static void Register(IEventHub eventHub, IDataAccess dataAccess)
         {
             eventHub.Register("Chat.Public.FromTelegram",
                     new Action<object>((x) => {

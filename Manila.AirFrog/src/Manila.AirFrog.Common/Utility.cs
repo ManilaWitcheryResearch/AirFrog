@@ -10,6 +10,12 @@
 
     class Utility
     {
+        public static string SaltPassword(string pwd)
+        {
+            // TODO: implement with MD5 or SHA256.
+            return pwd;
+        }
+
         public static async Task<string> HttpJsonRequestPosterAsync(object obj, string url)
         {
             try

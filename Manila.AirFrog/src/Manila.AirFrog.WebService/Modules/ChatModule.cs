@@ -62,7 +62,7 @@
 
                 return Response.AsJson(successResponse);
             };
-
+            
             Post["/api/mcs/deathmsg"] = parameters =>
             {
                 AirFrog.EventHub.Emit("Chat.Public.BroadcastToTelegram.Group", new StdChatModel

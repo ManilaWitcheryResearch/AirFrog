@@ -9,7 +9,7 @@
     using Manila.AirFrog.Common.Models;
     using Newtonsoft.Json;
 
-    public class DataAccess
+    public class DataAccess : IDataAccess
     {
         private MemoryStore mStore = new MemoryStore();
         private ILogger Logger = new Logger("useless");
